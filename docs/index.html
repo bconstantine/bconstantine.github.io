@@ -4,62 +4,88 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Sketch Colorization - Demo Gallery</title>
+
     <style>
       :root {
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
         line-height: 1.5;
         --bg: #0d1117;
         --fg: #e6edf3;
         --accent: #3fb950;
       }
+
       body {
         margin: 0;
         background: var(--bg);
         color: var(--fg);
       }
+
+      /* ──────────────── HEADER ──────────────── */
       header {
         padding: 2rem 1rem;
         text-align: center;
         border-bottom: 1px solid #30363d;
       }
+
       header h1 {
         margin: 0;
         font-size: 2.2rem;
       }
-      header p {
-        margin-top: 0.3rem;
+
+      /* NEW: author & department lines */
+      header .authors,
+      header .dept {
+        margin: 0.2rem 0;
+        font-size: 1rem;
+        font-weight: 500;
+        opacity: 0.9;
+      }
+
+      header .dept {
+        opacity: 0.75;
+      }
+
+      /* description paragraph */
+      header p.description {
+        margin-top: 0.5rem;
         max-width: 60ch;
         margin-inline: auto;
         opacity: 0.8;
       }
 
-      /* Demo grid */
+      /* ──────────────── DEMO GRID ──────────────── */
       .demo-section {
         padding: 2rem 1rem;
         max-width: 1200px;
         margin-inline: auto;
       }
+
       .demo-section h2 {
         margin-top: 0;
         font-size: 1.5rem;
         border-left: 4px solid var(--accent);
         padding-left: 0.5rem;
       }
+
       .demo-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 1rem;
       }
+
       .card {
         background: #161b22;
         border: 1px solid #30363d;
         border-radius: 6px;
         padding: 0.5rem;
       }
+
       .card h3 {
         margin: 0 0 0.3rem 0;
         font-size: 1rem;
       }
+
       .card video,
       .card img {
         width: 100%;
@@ -68,13 +94,15 @@
         display: block;
       }
 
-      /* footer */
+      /* ──────────────── FOOTER ──────────────── */
       footer {
         text-align: center;
         padding: 2rem 0 3rem;
         font-size: 0.9rem;
         opacity: 0.6;
       }
+
+      /* ──────────────── LIGHT THEME ──────────────── */
       @media (prefers-color-scheme: light) {
         :root {
           --bg: #ffffff;
@@ -88,12 +116,22 @@
       }
     </style>
   </head>
+
   <body>
     <header>
-      <h1>Sketch Colorization: Demo Gallery</h1>
-      <p>
-        Comparative results for our <strong>Sketch-to-Color Video Diffusion</strong> model
-        against prior work (LVCD, ToonCrafter, AniDoc) across ten curated scenes.
+      <h1>SketchColour - Demo Gallery</h1>
+
+      <!-- Replace with your actual authors -->
+      <p class="authors">Bryan&nbsp;Constantine&nbsp;Sadihin*,&nbsp;Michael&nbsp;Hua&nbsp;Wang*,&nbsp;Shei&nbsp;Pern&nbsp;Chua</p>
+
+      <p class="dept">
+        Department&nbsp;of&nbsp;Computer&nbsp;Science<br />Tsinghua&nbsp;University
+      </p>
+
+      <p class="description">
+        Comparative results for our
+        <strong>Sketch-to-Color Video Diffusion</strong> model against prior work
+        (LVCD, ToonCrafter, AniDoc) across ten curated scenes.
       </p>
     </header>
 
@@ -101,9 +139,13 @@
     <main id="gallery"></main>
 
     <footer>
-      Built with ♥ and GitHub Pages · <a href="https://github.com/<YOUR-USERNAME>/<REPO-NAME>">source code</a>
+      Built with ♥ and GitHub Pages ·
+      <a href="https://github.com/&lt;YOUR-USERNAME&gt;/&lt;REPO-NAME&gt;"
+        >source code</a
+      >
     </footer>
 
+    <!-- ============= SCRIPT ============= -->
     <script>
       /* -------------------------------------------------
          1.  List the exact basenames of your scenes (no tag, no .mp4).
@@ -125,7 +167,7 @@
       // Tags & their readable labels
       const tags = [
         ["Ground Truth Video", "ground_truth"],
-        ["SketchColour", "sketchcolour"],
+        ["SketchColour (Ours)", "sketchcolour"],
         ["LVCD", "lvcd"],
         ["ToonCrafter", "tooncrafter"],
         ["AniDoc", "anidoc"],
@@ -138,7 +180,10 @@
         const section = document.createElement("section");
         section.className = "demo-section";
         section.id = `example-${idx + 1}`;
-        section.innerHTML = `<h2>Scene ${idx + 1}: <code>${base}</code></h2><div class="demo-grid"></div>`;
+        section.innerHTML = `
+          <h2>Scene ${idx + 1}: <code>${base}</code></h2>
+          <div class="demo-grid"></div>
+        `;
 
         const grid = section.querySelector(".demo-grid");
 
@@ -147,7 +192,13 @@
           card.className = "card";
           card.innerHTML = `
             <h3>${label}</h3>
-            <video muted autoplay playsinline preload="metadata" src="${basePath}/${slug}/${base}.mp4"></video>
+            <video
+              muted
+              autoplay
+              playsinline
+              preload="metadata"
+              src="${basePath}/${slug}/${base}.mp4"
+            ></video>
           `;
           grid.appendChild(card);
         });
@@ -156,7 +207,7 @@
       });
 
       /* -------------------------------------------------
-         Synchronize looping per scene: all six videos in a
+         Synchronize looping per scene: all five videos in a
          section restart together when the *longest* finishes.
       --------------------------------------------------*/
       document.querySelectorAll(".demo-section").forEach((section) => {
