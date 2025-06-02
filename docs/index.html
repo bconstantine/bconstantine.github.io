@@ -1,1 +1,161 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sketch Colorization - Demo Gallery</title>
+    <style>
+      :root {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.5;
+        --bg: #0d1117;
+        --fg: #e6edf3;
+        --accent: #3fb950;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+      }
+      header {
+        padding: 2rem 1rem;
+        text-align: center;
+        border-bottom: 1px solid #30363d;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 2.2rem;
+      }
+      header p {
+        margin-top: 0.3rem;
+        max-width: 60ch;
+        margin-inline: auto;
+        opacity: 0.8;
+      }
+
+      /* Demo grid */
+      .demo-section {
+        padding: 2rem 1rem;
+        max-width: 1200px;
+        margin-inline: auto;
+      }
+      .demo-section h2 {
+        margin-top: 0;
+        font-size: 1.5rem;
+        border-left: 4px solid var(--accent);
+        padding-left: 0.5rem;
+      }
+      .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem;
+      }
+      .card {
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        padding: 0.5rem;
+      }
+      .card h3 {
+        margin: 0 0 0.3rem 0;
+        font-size: 1rem;
+      }
+      .card video,
+      .card img {
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+        display: block;
+      }
+
+      /* footer */
+      footer {
+        text-align: center;
+        padding: 2rem 0 3rem;
+        font-size: 0.9rem;
+        opacity: 0.6;
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #ffffff;
+          --fg: #24292e;
+          --accent: #1f883d;
+        }
+        .card {
+          background: #f6f8fa;
+          border-color: #d0d7de;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Sketch Colorization: Demo Gallery</h1>
+      <p>
+        Comparative results for our <strong>Sketch-to-Color Video Diffusion</strong> model
+        against prior work (LVCD, ToonCrafter, AniDoc) across ten curated scenes.
+      </p>
+    </header>
+
+    <!-- ============= GALLERY ============= -->
+    <main id="gallery"></main>
+
+    <footer>
+      Built with ♥ and GitHub Pages · <a href="https://github.com/<YOUR-USERNAME>/<REPO-NAME>">source code</a>
+    </footer>
+
+    <script>
+      /* -------------------------------------------------
+         Provide the exact basename (without tag and .mp4)
+         for each of your ten scenes. The script will append
+         _<tag>.mp4 to build full filenames.
+      --------------------------------------------------*/
+      const basenames = [
+        "5259-Scene-10",
+        "24752-Scene-5",
+        "77934-Scene-11",
+        "79357-Scene-8",
+        "105678-Scene-6",
+        "121433-Scene-38",
+        "144759-Scene-3",
+        "155922-Scene-24",
+        "176156-Scene-3",
+        "178014-Scene-19",
+      ];
+
+      // Keep tags consistent with your exported file naming.
+      // For each <basename> we expect: <basename>_<slug>.mp4
+      const tags = [
+        ["Ground Truth Video", "gt"],
+        ["Ours", "ours"],
+        ["LVCD", "lvcd"],
+        ["ToonCrafter", "tooncrafter"],
+        ["AniDoc", "anidoc"],
+      ];
+
+      const basePath = "assets/videos";
+      const gallery = document.getElementById("gallery");
+
+      basenames.forEach((base, idx) => {
+        const section = document.createElement("section");
+        section.className = "demo-section";
+        section.id = `example-${idx + 1}`;
+        section.innerHTML = `<h2>Scene ${idx + 1}: <code>${base}</code></h2><div class="demo-grid"></div>`;
+
+        const grid = section.querySelector(".demo-grid");
+
+        tags.forEach(([label, slug]) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <h3>${label}</h3>
+            <video controls preload="metadata" src="${basePath}/${slug}/${base}.mp4"></video>
+          `;
+          grid.appendChild(card);
+        });
+
+        gallery.appendChild(section);
+      });
+    </script>
+  </body>
+</html>
