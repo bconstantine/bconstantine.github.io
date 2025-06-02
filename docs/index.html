@@ -106,9 +106,8 @@
 
     <script>
       /* -------------------------------------------------
-         Provide the exact basename (without tag and .mp4)
-         for each of your ten scenes. The script will append
-         _<tag>.mp4 to build full filenames.
+         1.  List the exact basenames of your scenes (no tag, no .mp4).
+         2.  The script appends _<slug>.mp4 to build full filenames.
       --------------------------------------------------*/
       const basenames = [
         "5259-Scene-10",
@@ -123,11 +122,10 @@
         "178014-Scene-19",
       ];
 
-      // Keep tags consistent with your exported file naming.
-      // For each <basename> we expect: <basename>_<slug>.mp4
+      // Tags & their readable labels
       const tags = [
-        ["Ground Truth Video", "gt"],
-        ["Ours", "ours"],
+        ["Ground Truth Video", "ground_truth"],
+        ["SketchColour", "sketchcolour"],
         ["LVCD", "lvcd"],
         ["ToonCrafter", "tooncrafter"],
         ["AniDoc", "anidoc"],
@@ -149,12 +147,39 @@
           card.className = "card";
           card.innerHTML = `
             <h3>${label}</h3>
-            <video controls preload="metadata" src="${basePath}/${slug}/${base}.mp4"></video>
+            <video muted autoplay playsinline preload="metadata" src="${basePath}/${slug}/${base}.mp4"></video>
           `;
           grid.appendChild(card);
         });
 
         gallery.appendChild(section);
+      });
+
+      /* -------------------------------------------------
+         Synchronize looping per scene: all six videos in a
+         section restart together when the *longest* finishes.
+      --------------------------------------------------*/
+      document.querySelectorAll(".demo-section").forEach((section) => {
+        const vids = Array.from(section.querySelectorAll("video"));
+        let endedCount = 0;
+
+        vids.forEach((v) => {
+          // Ensure the first play starts on load
+          v.addEventListener("loadedmetadata", () => v.play());
+
+          v.addEventListener("ended", () => {
+            endedCount += 1;
+            if (endedCount === vids.length) {
+              // Reset counter for next round
+              endedCount = 0;
+              vids.forEach((vid) => {
+                vid.currentTime = 0;
+                // Small timeout ensures all resets before play()
+                setTimeout(() => vid.play(), 50);
+              });
+            }
+          });
+        });
       });
     </script>
   </body>
