@@ -1,6 +1,206 @@
-    <!-- …the rest of your HTML up thru <script> stays the same… -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sketch Colorization - Demo Gallery</title>
 
+    <style>
+      :root {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        line-height: 1.5;
+        --bg: #0d1117;
+        --fg: #e6edf3;
+        --accent: #3fb950;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+      }
+
+      /* ──────────────── HEADER ──────────────── */
+      header {
+        padding: 2rem 1rem;
+        text-align: center;
+        border-bottom: 1px solid #30363d;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 2.2rem;
+      }
+
+      /* NEW: author & department lines */
+      header .authors,
+      header .dept {
+        margin: 0.2rem 0;
+        font-size: 1rem;
+        font-weight: 500;
+        opacity: 0.9;
+      }
+
+      header .dept {
+        opacity: 0.75;
+      }
+
+      /* description paragraph */
+      header p.description {
+        margin-top: 0.5rem;
+        max-width: 60ch;
+        margin-inline: auto;
+        opacity: 0.8;
+      }
+
+      /* ──────────────── DEMO GRID ──────────────── */
+      .demo-section {
+        padding: 2rem 1rem;
+        max-width: 1200px;
+        margin-inline: auto;
+      }
+
+      .demo-section h2 {
+        margin-top: 0;
+        font-size: 1.5rem;
+        border-left: 4px solid var(--accent);
+        padding-left: 0.5rem;
+      }
+
+      .demo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1rem;
+      }
+
+      .card {
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        padding: 0.5rem;
+      }
+
+      .card h3 {
+        margin: 0 0 0.3rem 0;
+        font-size: 1rem;
+      }
+
+      .card video,
+      .card img {
+        width: 100%;
+        height: auto;
+        border-radius: 4px;
+        display: block;
+      }
+
+      /* ──────────────── FOOTER ──────────────── */
+      footer {
+        text-align: center;
+        padding: 2rem 0 3rem;
+        font-size: 0.9rem;
+        opacity: 0.6;
+      }
+
+      /* ──────────────── LIGHT THEME ──────────────── */
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #ffffff;
+          --fg: #24292e;
+          --accent: #1f883d;
+        }
+        .card {
+          background: #f6f8fa;
+          border-color: #d0d7de;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Demo of SketchColour: <br>
+        DiT-Based Sketch-to-Colour Pipeline for 2D Animation</h1>
+
+      <!-- Replace with your actual authors -->
+      <p class="authors">Bryan&nbsp;Constantine&nbsp;Sadihin*,&nbsp;Michael&nbsp;Hua&nbsp;Wang*,&nbsp;Shei&nbsp;Pern&nbsp;Chua*</p>
+
+      <p class="dept">
+        Department&nbsp;of&nbsp;Computer&nbsp;Science<br />Tsinghua&nbsp;University
+      </p>
+
+      <p class="description">
+        Comparative results for our
+        <strong>Sketch-to-Color Video Diffusion</strong> model against prior work
+        (LVCD, ToonCrafter, AniDoc) across ten scenes of SAKUGA validation dataset. ToonCrafter uses the first and last frame of the ground truth video, 
+        while all other models only reference the first frame of the video. 
+      </p>
+    </header>
+
+    <!-- ============= GALLERY ============= -->
+    <main id="gallery"></main>
+
+    <footer>
+      Built with ♥ and GitHub Pages ·
+      <a href="https://github.com/&lt;YOUR-USERNAME&gt;/&lt;REPO-NAME&gt;"
+        >source code</a
+      >
+    </footer>
+
+    <!-- ============= SCRIPT ============= -->
     <script>
+      /* -------------------------------------------------
+         1.  List the exact basenames of your scenes (no tag, no .mp4).
+         2.  The script appends _<slug>.mp4 to build full filenames.
+      --------------------------------------------------*/
+      const basenames = [
+        "105678-Scene-6",
+        "109669-Scene-2",
+        "110083-Scene-3",
+        "112964-Scene-11",
+        "113239-Scene-4",
+        "113466-Scene-4",
+        "121433-Scene-38",
+        "122358-Scene-11",
+        "123580-Scene-19",
+        "123804-Scene-25",
+        "110493-Scene-2",
+        "124253-Scene-23",
+        "130490-Scene-2",
+        "131027-Scene-24",
+        "135093-Scene-16",
+        "141996-Scene-6",
+        "159969-Scene-9",
+        "168228-Scene-26",
+        "168884-Scene-8",
+        "175444-Scene-11",
+        "176156-Scene-3",
+        "182477-Scene-3",
+        "188891-Scene-6",
+        "189517-Scene-27",
+        "196373-Scene-2",
+        "196738-Scene-2",
+        "201867-Scene-25",
+        "214106-Scene-7",
+        "22007-Scene-3",
+        "222180-Scene-5",
+        "233988-Scene-3",
+        "238108-Scene-11",
+        "243204-Scene-16",
+        "247213-Scene-12",
+        "37170-Scene-19",
+        "37397-Scene-2",
+        "50295-Scene-11",
+        "56961-Scene-3",
+        "60668-Scene-4",
+        "64303-Scene-10",
+        "65769-Scene-5",
+        "77934-Scene-11",
+        "81204-Scene-7",
+        "86622-Scene-1",
+      ];
+
+      // Tags & their readable labels
       const tags = [
         ["Ground Truth Video", "ground_truth"],
         ["Ground Truth Sketch", "ground_truth_sketch"],
@@ -9,77 +209,66 @@
         ["ToonCrafter", "tooncrafter"],
         ["AniDoc", "anidoc"],
       ];
+
       const basePath = "assets/videos";
       const gallery = document.getElementById("gallery");
 
-      // 1️⃣ Fetch the directory listing for one of the sub-folders:
-      async function fetchBasenames() {
-        const res = await fetch(`${basePath}/ground_truth/`);
-        if (!res.ok) throw new Error("Directory listing not available");
-        const html = await res.text();
-        // 2️⃣ Parse it to pull out all .mp4 filenames
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
-        return Array.from(doc.querySelectorAll("a"))
-          .map(a => a.getAttribute("href"))
-          .filter(name => name.endsWith(".mp4"))
-          .map(name => name.replace(/\.mp4$/, ""));
-      }
+      basenames.forEach((base, idx) => {
+        const section = document.createElement("section");
+        section.className = "demo-section";
+        section.id = `example-${idx + 1}`;
+        section.innerHTML = `
+          <h2>Scene ${idx + 1}: <code>${base}</code></h2>
+          <div class="demo-grid"></div>
+        `;
 
-      // 3️⃣ Once we have the basenames, build each section just like before
-      (async () => {
-        let basenames;
-        try {
-          basenames = await fetchBasenames();
-        } catch (e) {
-          console.error(e);
-          // fallback or show an error message to the user
-          return;
-        }
+        const grid = section.querySelector(".demo-grid");
 
-        basenames.forEach((base, idx) => {
-          const section = document.createElement("section");
-          section.className = "demo-section";
-          section.id = `example-${idx + 1}`;
-          section.innerHTML = `
-            <h2>Scene ${idx + 1}: <code>${base}</code></h2>
-            <div class="demo-grid"></div>
+        tags.forEach(([label, slug]) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <h3>${label}</h3>
+            <video
+              muted
+              autoplay
+              playsinline
+              preload="metadata"
+              src="${basePath}/${slug}/${base}-Crop.mp4"
+            ></video>
           `;
-          const grid = section.querySelector(".demo-grid");
-
-          tags.forEach(([label, slug]) => {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.innerHTML = `
-              <h3>${label}</h3>
-              <video
-                muted autoplay playsinline preload="metadata"
-                src="${basePath}/${slug}/${base}.mp4"
-              ></video>
-            `;
-            grid.appendChild(card);
-          });
-
-          gallery.appendChild(section);
+          grid.appendChild(card);
         });
 
-        // 4️⃣ Sync the looping as before
-        document.querySelectorAll(".demo-section").forEach(section => {
-          const vids = Array.from(section.querySelectorAll("video"));
-          let endedCount = 0;
-          vids.forEach(v => {
-            v.addEventListener("loadedmetadata", () => v.play());
-            v.addEventListener("ended", () => {
-              endedCount += 1;
-              if (endedCount === vids.length) {
-                endedCount = 0;
-                vids.forEach(vid => {
-                  vid.currentTime = 0;
-                  setTimeout(() => vid.play(), 50);
-                });
-              }
-            });
+        gallery.appendChild(section);
+      });
+
+      /* -------------------------------------------------
+         Synchronize looping per scene: all five videos in a
+         section restart together when the *longest* finishes.
+      --------------------------------------------------*/
+      document.querySelectorAll(".demo-section").forEach((section) => {
+        const vids = Array.from(section.querySelectorAll("video"));
+        let endedCount = 0;
+
+        vids.forEach((v) => {
+          // Ensure the first play starts on load
+          v.addEventListener("loadedmetadata", () => v.play());
+
+          v.addEventListener("ended", () => {
+            endedCount += 1;
+            if (endedCount === vids.length) {
+              // Reset counter for next round
+              endedCount = 0;
+              vids.forEach((vid) => {
+                vid.currentTime = 0;
+                // Small timeout ensures all resets before play()
+                setTimeout(() => vid.play(), 50);
+              });
+            }
           });
         });
-      })();
+      });
     </script>
+  </body>
+</html>
