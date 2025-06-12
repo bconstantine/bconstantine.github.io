@@ -233,6 +233,7 @@
               playsinline
               preload="metadata"
               src="${basePath}/${slug}/${base}${suffix}"
+              onerror="console.error('Video failed to load:', this.src)"
             ></video>
           `;
           grid.appendChild(card);
