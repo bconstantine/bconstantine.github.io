@@ -13,12 +13,19 @@
         --bg: #0d1117;
         --fg: #e6edf3;
         --accent: #3fb950;
+        --warn-bg: #bf1717;
+        --warn-fg: #fff;
+        --info-bg: #1e6bb8;
+        --info-fg: #fff;
       }
+
       body {
         margin: 0;
         background: var(--bg);
         color: var(--fg);
       }
+
+      /* ──────────────── HEADER ──────────────── */
       header {
         padding: 2rem 1rem;
         text-align: center;
@@ -44,6 +51,23 @@
         margin-inline: auto;
         opacity: 0.8;
       }
+
+      /* ──────────────── MESSAGES ──────────────── */
+      .warning {
+        background: var(--warn-bg);
+        color: var(--warn-fg);
+        padding: 0.5rem 1rem;
+        text-align: center;
+        font-weight: bold;
+      }
+      .info {
+        background: var(--info-bg);
+        color: var(--info-fg);
+        padding: 0.5rem 1rem;
+        text-align: center;
+      }
+
+      /* ──────────────── DEMO GRID ──────────────── */
       .demo-section {
         padding: 2rem 1rem;
         max-width: 1200px;
@@ -55,11 +79,13 @@
         border-left: 4px solid var(--accent);
         padding-left: 0.5rem;
       }
+
       .demo-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 1rem;
       }
+
       .card {
         background: #161b22;
         border: 1px solid #30363d;
@@ -78,17 +104,23 @@
         background: #000;
         cursor: pointer;
       }
+
+      /* ──────────────── FOOTER ──────────────── */
       footer {
         text-align: center;
         padding: 2rem 0 3rem;
         font-size: 0.9rem;
         opacity: 0.6;
       }
+
+      /* ──────────────── LIGHT THEME ──────────────── */
       @media (prefers-color-scheme: light) {
         :root {
           --bg: #ffffff;
           --fg: #24292e;
           --accent: #1f883d;
+          --warn-bg: #d94a4a;
+          --info-bg: #4c8ed9;
         }
         .card {
           background: #f6f8fa;
@@ -108,15 +140,21 @@
         Bryan Constantine Sadihin*, Michael Hua Wang*, Shei Pern Chua*
       </p>
       <p class="dept">
-        Department of Computer Science<br />
-        Tsinghua University
+        Department of Computer Science<br />Tsinghua University
       </p>
       <p class="description">
         Comparative results for our
         <strong>Sketch-to-Color Video Diffusion</strong> model against prior work
-        (LVCD, ToonCrafter, AniDoc) across scenes of the SAKUGA validation set.
+        (LVCD, ToonCrafter, AniDoc) across ten scenes of SAKUGA validation dataset.
       </p>
     </header>
+
+    <div class="warning">
+      HOLD ON! There are a lot of videos to load here, make sure to take time scrolling to avoid crashing the page
+    </div>
+    <div class="info">
+      The video will play once; press any of the videos again to restart the scenes altogether
+    </div>
 
     <main id="gallery"></main>
 
@@ -126,13 +164,22 @@
     </footer>
 
     <script>
-      // 1) List your scene basenames
+      // 1. Scene basenames
       const basenames = [
         "105678-Scene-6","109669-Scene-2","110083-Scene-3","112964-Scene-11",
-        /* … all the others … */ "86622-Scene-1"
+        "113239-Scene-4","113466-Scene-4","121433-Scene-38","122358-Scene-11",
+        "123580-Scene-19","123804-Scene-25","110493-Scene-2","124253-Scene-23",
+        "130490-Scene-2","131027-Scene-24","135093-Scene-16","141996-Scene-6",
+        "159969-Scene-9","168228-Scene-26","168884-Scene-8","175444-Scene-11",
+        "176156-Scene-3","182477-Scene-3","188891-Scene-6","189517-Scene-27",
+        "196373-Scene-2","196738-Scene-2","201867-Scene-25","214106-Scene-7",
+        "22007-Scene-3","222180-Scene-5","233988-Scene-3","238108-Scene-11",
+        "243204-Scene-16","247213-Scene-12","37170-Scene-19","37397-Scene-2",
+        "50295-Scene-11","56961-Scene-3","60668-Scene-4","64303-Scene-10",
+        "65769-Scene-5","77934-Scene-11","81204-Scene-7","86622-Scene-1"
       ];
 
-      // 2) Model tags & folder slugs
+      // 2. Tags & slugs
       const tags = [
         ["Ground Truth Video", "ground_truth"],
         ["Ground Truth Sketch", "ground_truth_sketch"],
@@ -145,10 +192,24 @@
       const basePath = "assets/videos";
       const gallery = document.getElementById("gallery");
 
-      // 3) Build the grid of video cards (no src set yet)
+      // 3. IntersectionObserver: play when in view, pause when out
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          const vid = e.target;
+          if (e.isIntersecting) {
+            if (!vid.src) vid.src = vid.dataset.src;
+            vid.play();
+          } else {
+            vid.pause();
+          }
+        });
+      }, { threshold: 0.25 });
+
+      // 4. Build the grid
       basenames.forEach((base, i) => {
         const section = document.createElement("section");
         section.className = "demo-section";
+        section.id = `scene-${i+1}`;
         section.innerHTML = `
           <h2>Scene ${i+1}: <code>${base}</code></h2>
           <div class="demo-grid"></div>
@@ -178,19 +239,17 @@
         gallery.appendChild(section);
       });
 
-      // 4) On click: load (if needed) and toggle play/pause
-      document.querySelectorAll("video").forEach(vid => {
+      // 5. Observe & click behavior
+      document.querySelectorAll(".card video").forEach(vid => {
+        io.observe(vid);
         vid.addEventListener("click", () => {
-          // only fetch the file on first click
-          if (!vid.src) {
-            vid.src = vid.dataset.src;
-          }
-          // toggle play/pause
-          if (vid.paused) {
-            vid.play();
-          } else {
-            vid.pause();
-          }
+          const section = vid.closest(".demo-section");
+          const vids = section.querySelectorAll("video");
+          vids.forEach(v => {
+            if (!v.src) v.src = v.dataset.src;
+            v.currentTime = 0;
+            v.play();
+          });
         });
       });
     </script>
