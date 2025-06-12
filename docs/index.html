@@ -7,7 +7,8 @@
 
     <style>
       :root {
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+          sans-serif;
         line-height: 1.5;
         --bg: #0d1117;
         --fg: #e6edf3;
@@ -20,18 +21,16 @@
         color: var(--fg);
       }
 
-      /* ──────────────── HEADER ──────────────── */
+      /* HEADER */
       header {
         padding: 2rem 1rem;
         text-align: center;
         border-bottom: 1px solid #30363d;
       }
-
       header h1 {
         margin: 0;
         font-size: 2.2rem;
       }
-
       header .authors,
       header .dept {
         margin: 0.2rem 0;
@@ -39,11 +38,9 @@
         font-weight: 500;
         opacity: 0.9;
       }
-
       header .dept {
         opacity: 0.75;
       }
-
       header p.description {
         margin-top: 0.5rem;
         max-width: 60ch;
@@ -51,7 +48,7 @@
         opacity: 0.8;
       }
 
-      /* ──────────────── DEMO GRID ──────────────── */
+      /* DEMO GRID */
       .demo-section {
         padding: 2rem 1rem;
         max-width: 1200px;
@@ -63,34 +60,31 @@
         border-left: 4px solid var(--accent);
         padding-left: 0.5rem;
       }
-
       .demo-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 1rem;
       }
-
       .card {
         background: #161b22;
         border: 1px solid #30363d;
         border-radius: 6px;
         padding: 0.5rem;
       }
-
       .card h3 {
         margin: 0 0 0.3rem 0;
         font-size: 1rem;
       }
-
       .card video {
         width: 100%;
         height: auto;
         border-radius: 4px;
         display: block;
-        background: #000; /* placeholder background */
+        background: #000;
+        cursor: pointer;
       }
 
-      /* ──────────────── FOOTER ──────────────── */
+      /* FOOTER */
       footer {
         text-align: center;
         padding: 2rem 0 3rem;
@@ -98,7 +92,7 @@
         opacity: 0.6;
       }
 
-      /* ──────────────── LIGHT THEME ──────────────── */
+      /* LIGHT THEME */
       @media (prefers-color-scheme: light) {
         :root {
           --bg: #ffffff;
@@ -120,18 +114,15 @@
         DiT-Based Sketch-to-Colour Pipeline for 2D Animation
       </h1>
       <p class="authors">
-        Bryan&nbsp;Constantine&nbsp;Sadihin*,&nbsp;Michael&nbsp;Hua&nbsp;Wang*,&nbsp;Shei&nbsp;Pern&nbsp;Chua*
+        Bryan Constantine Sadihin*, Michael Hua Wang*, Shei Pern Chua*
       </p>
       <p class="dept">
-        Department&nbsp;of&nbsp;Computer&nbsp;Science<br />
-        Tsinghua&nbsp;University
+        Department of Computer Science<br />Tsinghua University
       </p>
       <p class="description">
         Comparative results for our
         <strong>Sketch-to-Color Video Diffusion</strong> model against prior work
-        (LVCD, ToonCrafter, AniDoc) across ten scenes of SAKUGA validation dataset. ToonCrafter
-        uses the first and last frame of the ground truth video, while all other models only reference the first
-        frame of the video.
+        (LVCD, ToonCrafter, AniDoc) across ten scenes of SAKUGA validation dataset.
       </p>
     </header>
 
@@ -143,20 +134,22 @@
     </footer>
 
     <script>
-      // List of scene basenames
+      // 1. Scene basenames
       const basenames = [
-        "105678-Scene-6","109669-Scene-2","110083-Scene-3","112964-Scene-11","113239-Scene-4",
-        "113466-Scene-4","121433-Scene-38","122358-Scene-11","123580-Scene-19","123804-Scene-25",
-        "110493-Scene-2","124253-Scene-23","130490-Scene-2","131027-Scene-24","135093-Scene-16",
-        "141996-Scene-6","159969-Scene-9","168228-Scene-26","168884-Scene-8","175444-Scene-11",
-        "176156-Scene-3","182477-Scene-3","188891-Scene-6","189517-Scene-27","196373-Scene-2",
-        "196738-Scene-2","201867-Scene-25","214106-Scene-7","22007-Scene-3","222180-Scene-5",
-        "233988-Scene-3","238108-Scene-11","243204-Scene-16","247213-Scene-12","37170-Scene-19",
-        "37397-Scene-2","50295-Scene-11","56961-Scene-3","60668-Scene-4","64303-Scene-10",
-        "65769-Scene-5","77934-Scene-11","81204-Scene-7","86622-Scene-1"
+        "105678-Scene-6", "109669-Scene-2", "110083-Scene-3", "112964-Scene-11",
+        "113239-Scene-4", "113466-Scene-4", "121433-Scene-38", "122358-Scene-11",
+        "123580-Scene-19", "123804-Scene-25", "110493-Scene-2", "124253-Scene-23",
+        "130490-Scene-2", "131027-Scene-24", "135093-Scene-16", "141996-Scene-6",
+        "159969-Scene-9", "168228-Scene-26", "168884-Scene-8", "175444-Scene-11",
+        "176156-Scene-3", "182477-Scene-3", "188891-Scene-6", "189517-Scene-27",
+        "196373-Scene-2", "196738-Scene-2", "201867-Scene-25", "214106-Scene-7",
+        "22007-Scene-3", "222180-Scene-5", "233988-Scene-3", "238108-Scene-11",
+        "243204-Scene-16", "247213-Scene-12", "37170-Scene-19", "37397-Scene-2",
+        "50295-Scene-11", "56961-Scene-3", "60668-Scene-4", "64303-Scene-10",
+        "65769-Scene-5", "77934-Scene-11", "81204-Scene-7", "86622-Scene-1"
       ];
 
-      // Model tags & folder slugs
+      // 2. Tags & slugs
       const tags = [
         ["Ground Truth Video", "ground_truth"],
         ["Ground Truth Sketch", "ground_truth_sketch"],
@@ -169,25 +162,28 @@
       const basePath = "assets/videos";
       const gallery = document.getElementById("gallery");
 
-      // IntersectionObserver to lazy-load videos
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const vid = entry.target;
-            vid.src = vid.dataset.src;
+      // 3. IntersectionObserver: play when in view, pause when out
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          const vid = e.target;
+          if (e.isIntersecting) {
+            if (!vid.src) {
+              vid.src = vid.dataset.src;
+            }
             vid.play();
-            observer.unobserve(vid);
+          } else {
+            vid.pause();
           }
         });
-      }, { rootMargin: '200px' });
+      }, { threshold: 0.25 });
 
-      // Build sections and cards
-      basenames.forEach((base, idx) => {
+      // 4. Build the grid
+      basenames.forEach((base, i) => {
         const section = document.createElement("section");
         section.className = "demo-section";
-        section.id = `example-${idx + 1}`;
+        section.id = `scene-${i+1}`;
         section.innerHTML = `
-          <h2>Scene ${idx + 1}: <code>${base}</code></h2>
+          <h2>Scene ${i+1}: <code>${base}</code></h2>
           <div class="demo-grid"></div>
         `;
         const grid = section.querySelector(".demo-grid");
@@ -205,8 +201,8 @@
               muted
               playsinline
               preload="none"
-              poster="${basePath}/${slug}/${base}-poster.jpg"
               data-src="${basePath}/${slug}/${base}${suffix}"
+              poster="${basePath}/${slug}/${base}-poster.jpg"
             ></video>
           `;
           grid.appendChild(card);
@@ -215,23 +211,21 @@
         gallery.appendChild(section);
       });
 
-      // Observe every video element
-      document.querySelectorAll("video").forEach(v => observer.observe(v));
+      // 5. Observe & click behavior
+      document.querySelectorAll(".card video").forEach(vid => {
+        // lazy play/pause
+        io.observe(vid);
 
-      // Synchronize looping per section
-      document.querySelectorAll(".demo-section").forEach(section => {
-        const vids = Array.from(section.querySelectorAll("video"));
-        let endedCount = 0;
-        vids.forEach(v => {
-          v.addEventListener("ended", () => {
-            endedCount++;
-            if (endedCount === vids.length) {
-              endedCount = 0;
-              vids.forEach(vid => {
-                vid.currentTime = 0;
-                setTimeout(() => vid.play(), 50);
-              });
-            }
+        // click to play-from-start once
+        vid.addEventListener("click", () => {
+          const section = vid.closest(".demo-section");
+          const vids = section.querySelectorAll("video");
+          vids.forEach(v => {
+            // ensure src is set
+            if (!v.src) v.src = v.dataset.src;
+            // restart and play once
+            v.currentTime = 0;
+            v.play();
           });
         });
       });
